@@ -1,0 +1,576 @@
+<title>Flagship Launch Plan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one reading column, four tabbed views (timeline, go/no-go, 30/60/90, AI at work). The November axis is the one signature element. */
+:root{
+  --bg:#F4F6F8; --surface:#FFFFFF; --ink:#14202B; --muted:#5A6874; --line:#D9DFE5; --line-strong:#9AA7B3;
+  --accent:#2F54D6; --accent-ink:#FFFFFF; --accent-soft:#E6EBFB;
+  --go:#17794B; --go-soft:#E3F3EA; --warn:#9A6200; --warn-soft:#FBF0D9; --stop:#B3302F; --stop-soft:#FAE5E4;
+  --font-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E141A; --surface:#161E26; --ink:#E7ECF1; --muted:#9AA7B3; --line:#27323D; --line-strong:#5A6874;
+    --accent:#8AA2FF; --accent-ink:#0E141A; --accent-soft:#1E2A4A;
+    --go:#5CC58D; --go-soft:#12301F; --warn:#E3A93C; --warn-soft:#33270E; --stop:#F08583; --stop-soft:#3A1918;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E141A; --surface:#161E26; --ink:#E7ECF1; --muted:#9AA7B3; --line:#27323D; --line-strong:#5A6874;
+  --accent:#8AA2FF; --accent-ink:#0E141A; --accent-soft:#1E2A4A;
+  --go:#5CC58D; --go-soft:#12301F; --warn:#E3A93C; --warn-soft:#33270E; --stop:#F08583; --stop-soft:#3A1918;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-body); font-size:15px; line-height:1.5;
+  padding-block:28px 48px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+.page{max-width:980px;margin:0 auto}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3{text-wrap:balance;margin:0}
+p{margin:0}
+
+/* header */
+.eyebrow{font:500 12px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:clamp(28px,4.6vw,40px);font-weight:650;letter-spacing:-.02em;line-height:1.1;margin-top:8px}
+.sub{font-size:17px;color:var(--muted);max-width:62ch;margin-top:10px}
+.assume{font-size:13px;color:var(--muted);max-width:78ch;margin-top:14px}
+.assume b{font:500 11.5px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink);margin-right:6px}
+
+/* tabs */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:26px 0 20px;overflow-x:auto}
+.tab{appearance:none;background:none;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;color:var(--muted);font:600 14px var(--font-body);padding:10px 14px;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+
+.stack{display:grid;gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;min-width:0}
+h2{font-size:20px;font-weight:650;letter-spacing:-.01em}
+h3{font:500 12px var(--font-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.lede{color:var(--muted);margin-top:4px;max-width:70ch}
+.mono{font-family:var(--font-mono)}
+
+/* chips and buttons */
+.chip{display:inline-block;padding:2px 9px;border-radius:999px;font:600 12px var(--font-body);white-space:nowrap}
+.chip.go{background:var(--go-soft);color:var(--go)}
+.chip.stop{background:var(--stop-soft);color:var(--stop)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.mute{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+.chip.acc{background:var(--accent-soft);color:var(--accent)}
+.btn{font:600 13px var(--font-body);padding:7px 12px;border-radius:7px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--line-strong)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.approve[aria-pressed="true"]{background:var(--go-soft);border-color:var(--go);color:var(--go)}
+.btn.reject[aria-pressed="true"]{background:var(--stop-soft);border-color:var(--stop);color:var(--stop)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+/* timeline */
+.axis-scroll{overflow-x:auto;margin-top:8px}
+.axis-pad{min-width:860px;padding:0 72px}
+.axis{position:relative;height:230px}
+.axis-line{position:absolute;left:0;right:0;top:50%;height:2px;background:var(--line-strong);transform:translateY(-1px)}
+.band{position:absolute;top:calc(50% - 9px);height:18px;background:var(--warn-soft);border:1px solid var(--warn);border-radius:4px}
+.mk{position:absolute;left:var(--x);top:0;bottom:0;width:0}
+.mk .dot{position:absolute;top:50%;left:0;width:11px;height:11px;border-radius:50%;transform:translate(-50%,-50%);background:var(--ink);border:2px solid var(--surface)}
+.mk .stem{position:absolute;left:0;width:1px;background:var(--line-strong);height:var(--h)}
+.mk.up .stem{bottom:50%}
+.mk.down .stem{top:50%}
+.mk .lab{position:absolute;left:0;transform:translateX(-50%);width:max-content;max-width:132px;text-align:center;font-size:12.5px;line-height:1.3}
+.mk.up .lab{bottom:calc(50% + var(--h) + 4px)}
+.mk.down .lab{top:calc(50% + var(--h) + 4px)}
+.mk .lab b{display:block;font:500 12px var(--font-mono);color:var(--muted);margin-bottom:1px}
+.mk.go .dot{background:var(--accent);width:15px;height:15px}
+.mk.go .lab{font-weight:600}
+.mk.end .dot{background:var(--stop)}
+.mk.end .lab b{color:var(--stop)}
+.mk.alt .dot{background:var(--surface);border:2px solid var(--muted)}
+.band-lab b{color:var(--warn)}
+.steps-scroll{overflow-x:auto;padding-bottom:4px}
+.steps{display:grid;grid-template-columns:repeat(7,minmax(124px,1fr));gap:8px}
+.step{text-align:left;background:var(--surface);color:var(--ink);font-family:inherit;border:1px solid var(--line);border-top:3px solid var(--line-strong);border-radius:8px;padding:10px 10px 12px;cursor:pointer;display:flex;flex-direction:column;gap:4px;min-width:0}
+.step:hover{border-color:var(--line-strong)}
+.step[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);border-top-color:var(--accent)}
+.step-date{font:500 11.5px var(--font-mono);color:var(--muted)}
+.step-name{font-weight:600;font-size:14px;line-height:1.25}
+.detail{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:20px 24px;margin-top:14px}
+.detail h3{margin-bottom:6px}
+
+/* gate */
+.gate{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;align-items:start}
+.check{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;padding:14px 0;border-top:1px solid var(--line);cursor:pointer}
+.check:first-of-type{border-top:0}
+.check input{width:20px;height:20px;margin:1px 0 0;accent-color:var(--accent)}
+.check .who{grid-column:2;font:400 12px var(--font-mono);color:var(--muted)}
+.verdict{border:1px solid var(--line-strong);border-radius:10px;padding:18px;background:var(--surface)}
+.verdict[data-tone="go"]{background:var(--go-soft);border-color:var(--go)}
+.verdict[data-tone="stop"]{background:var(--stop-soft);border-color:var(--stop)}
+.verdict .count{font:500 13px var(--font-mono);color:var(--muted)}
+.verdict .call{font-size:30px;font-weight:700;letter-spacing:-.01em;line-height:1.1;margin:4px 0 8px}
+.verdict[data-tone="go"] .call{color:var(--go)}
+.verdict[data-tone="stop"] .call{color:var(--stop)}
+.verdict ul{margin:10px 0 0;padding-left:18px}
+.verdict li{margin:2px 0}
+
+/* targets */
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+.seg button{appearance:none;border:0;background:none;color:var(--muted);font:600 14px var(--font-body);padding:8px 18px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{font:500 12px var(--font-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 12px;border-bottom:1px solid var(--line-strong)}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+td:first-child{font-weight:600;min-width:170px}
+.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:14px}
+.fields label{display:block;font-size:12.5px;color:var(--muted)}
+.fields input{display:block;width:100%;margin-top:4px;height:38px;padding:0 10px;border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--ink);font:500 14px var(--font-mono)}
+.overall{border:1px solid var(--line-strong);border-radius:10px;padding:12px 14px;margin-top:14px;font-weight:600}
+.overall[data-tone="go"]{background:var(--go-soft);border-color:var(--go);color:var(--go)}
+.overall[data-tone="warn"]{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+.overall[data-tone="stop"]{background:var(--stop-soft);border-color:var(--stop);color:var(--stop)}
+details{margin-top:14px}
+summary{cursor:pointer;font-weight:600}
+details dl{margin:10px 0 0;display:grid;grid-template-columns:minmax(120px,max-content) 1fr;gap:6px 18px;font-size:14px}
+details dt{font-weight:600}
+details dd{margin:0;color:var(--muted)}
+
+/* AI view */
+.tri{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto;gap:6px 18px;padding:12px 0;border-top:1px solid var(--line);align-items:center}
+.tri .raw{font:400 12.5px var(--font-mono);color:var(--muted);overflow-wrap:anywhere}
+.tri .to{font-weight:600}
+.tri .why{font-size:13px;color:var(--muted)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.draft{width:100%;min-height:230px;margin-top:10px;padding:12px;font:400 13px/1.55 var(--font-mono);background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;resize:vertical}
+ul.plain{margin:10px 0 0;padding-left:18px}
+ul.plain li{margin:6px 0}
+.note{font-size:13px;color:var(--muted)}
+footer{margin-top:28px;font-size:13px;color:var(--muted);max-width:80ch}
+
+@media (max-width:760px){
+  .gate{grid-template-columns:minmax(0,1fr)}
+  .tri{grid-template-columns:minmax(0,1fr)}
+  details dl{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion: no-preference){
+  .step,.btn,.tab{transition:background-color .15s,border-color .15s,color .15s}
+}
+</style>
+
+<div class="page">
+  <header>
+    <div class="eyebrow">Flowhub CSM prep · liquor retail</div>
+    <h1>Flagship launch plan</h1>
+    <p class="sub">Two stores. Flagship first transaction on Thu Nov 12, store two in mid-January. Click through the timeline, the go/no-go gate and the 30, 60 and 90 day targets.</p>
+    <p class="assume"><b>Assumptions</b>Holiday weekend is Nov 13 to 15. The current processor contract ends about Nov 23. The flagship has 3 registers and about 8 staff. Numbers marked as examples are placeholders, not customer data.</p>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="Plan views">
+    <button class="tab" role="tab" data-tab="timeline" aria-selected="true">Timeline</button>
+    <button class="tab" role="tab" data-tab="go-no-go" aria-selected="false" tabindex="-1">Go/no-go gate</button>
+    <button class="tab" role="tab" data-tab="targets" aria-selected="false" tabindex="-1">30, 60, 90 days</button>
+    <button class="tab" role="tab" data-tab="ai-at-work" aria-selected="false" tabindex="-1">AI at work</button>
+  </div>
+
+  <!-- TIMELINE -->
+  <section id="panel-timeline" role="tabpanel" class="stack">
+    <div class="card">
+      <h2>November decides it</h2>
+      <p class="lede">Payments approval and the catalog freeze come before the Nov 5 gate. Go-live leaves one trading day before the holiday weekend, so I am on-site through it.</p>
+      <div class="axis-scroll">
+        <div class="axis-pad">
+          <div class="axis" role="img" aria-label="November timeline: Nov 2 catalog freeze and processor approval, Nov 5 go/no-go, Nov 12 go-live, Nov 13 to 15 holiday weekend, Nov 16 fallback launch, about Nov 23 current contract ends">
+            <div class="axis-line"></div>
+            <div class="band" style="left:41.38%;width:6.9%"></div>
+            <div class="mk up" style="--x:3.45%;--h:28px"><span class="dot"></span><span class="stem"></span><span class="lab"><b>Nov 2</b>Catalog freeze, processor approved</span></div>
+            <div class="mk down" style="--x:13.79%;--h:28px"><span class="dot"></span><span class="stem"></span><span class="lab"><b>Nov 5</b>Go/no-go</span></div>
+            <div class="mk up go" style="--x:37.93%;--h:28px"><span class="dot"></span><span class="stem"></span><span class="lab"><b>Nov 12</b>Go-live</span></div>
+            <div class="mk down" style="--x:44.83%;--h:28px"><span class="stem"></span><span class="lab band-lab"><b>Nov 13 to 15</b>Holiday weekend (assumed)</span></div>
+            <div class="mk up alt" style="--x:51.72%;--h:70px"><span class="dot"></span><span class="stem"></span><span class="lab"><b>Nov 16</b>Fallback launch</span></div>
+            <div class="mk up end" style="--x:75.86%;--h:28px"><span class="dot"></span><span class="stem"></span><span class="lab"><b>About Nov 23</b>Current contract ends</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Signed contract to first transaction</h2>
+      <p class="lede">Select a step to see what I do, who I bring in and where I expect it to slip.</p>
+      <div class="steps-scroll" style="margin-top:14px"><div class="steps" id="steps"></div></div>
+      <div class="detail" id="detail" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- GATE -->
+  <section id="panel-go-no-go" role="tabpanel" class="stack" hidden>
+    <div class="gate">
+      <div class="card">
+        <h2>Launch Readiness Review, Thu Nov 5</h2>
+        <p class="lede">Criteria agreed with the owner at kickoff, so the call is not a negotiation. Tick each as the evidence comes in. This is an example state.</p>
+        <div id="gate-list" style="margin-top:10px"></div>
+        <div class="row" style="margin-top:14px">
+          <button class="btn" type="button" id="gate-all">Mark all met</button>
+          <button class="btn" type="button" id="gate-reset">Reset example</button>
+        </div>
+      </div>
+      <div class="verdict" id="verdict" data-tone="stop" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- TARGETS -->
+  <section id="panel-targets" role="tabpanel" class="stack" hidden>
+    <div class="card">
+      <div class="row" style="justify-content:space-between">
+        <div class="seg" id="seg" role="group" aria-label="Review point">
+          <button type="button" data-day="30" aria-pressed="true">Day 30</button>
+          <button type="button" data-day="60" aria-pressed="false">Day 60</button>
+          <button type="button" data-day="90" aria-pressed="false">Day 90</button>
+        </div>
+        <span class="chip acc" id="t-date"></span>
+      </div>
+      <h2 id="t-stage" style="margin-top:16px"></h2>
+      <p class="lede" id="t-q"></p>
+      <div class="tbl" style="margin-top:12px">
+        <table>
+          <thead><tr><th>Metric</th><th>Healthy looks like</th></tr></thead>
+          <tbody id="t-body"></tbody>
+        </table>
+      </div>
+      <details>
+        <summary>How each number is measured</summary>
+        <dl>
+          <dt>Failure rate</dt><dd>System-caused failed attempts ÷ total attempted transactions × 100. Source: POS logs and incident records. Customer and card-issuer declines are excluded.</dd>
+          <dt>Catalog accuracy</dt><dd>Correct audited product records ÷ records sampled × 100. Source: POS catalog against approved source data.</dd>
+          <dt>Reconciliation</dt><dd>Business days reconciled ÷ business days elapsed × 100. Source: POS reports, processor settlement reports, store records.</dd>
+          <dt>Repeat support</dt><dd>Repeat issue tickets per 100 transactions against the first 30-day baseline. Source: ticket log and POS volume.</dd>
+          <dt>Manual-price share</dt><dd>Manually priced or custom-price sale lines ÷ all sale lines × 100. A rising share means cashiers no longer trust the catalog. Targets for this one are my proposal.</dd>
+        </dl>
+      </details>
+    </div>
+
+    <div class="card" id="calc">
+      <h2>Health check</h2>
+      <p class="lede">Enter the numbers for the period and see each one against the targets for the day selected above. The starting values are examples.</p>
+      <form id="calc-form" class="fields" autocomplete="off">
+        <div><label for="f-att">Transactions attempted</label><input id="f-att" type="number" min="0" inputmode="numeric" value="4120"></div>
+        <div><label for="f-fail">System-caused failures</label><input id="f-fail" type="number" min="0" inputmode="numeric" value="14"></div>
+        <div><label for="f-samp">SKUs audited</label><input id="f-samp" type="number" min="0" inputmode="numeric" value="300"></div>
+        <div><label for="f-ok">SKUs correct</label><input id="f-ok" type="number" min="0" inputmode="numeric" value="297"></div>
+        <div><label for="f-lines">Sale lines</label><input id="f-lines" type="number" min="0" inputmode="numeric" value="9800"></div>
+        <div><label for="f-man">Manually priced lines</label><input id="f-man" type="number" min="0" inputmode="numeric" value="361"></div>
+        <div><label for="f-days">Business days elapsed</label><input id="f-days" type="number" min="0" inputmode="numeric" value="30"></div>
+        <div><label for="f-rec">Days reconciled</label><input id="f-rec" type="number" min="0" inputmode="numeric" value="30"></div>
+      </form>
+      <div class="overall" id="overall" data-tone="warn" aria-live="polite"></div>
+      <div class="tbl" style="margin-top:10px">
+        <table>
+          <thead><tr><th>Measure</th><th>Result</th><th>Target</th><th>Status</th></tr></thead>
+          <tbody id="calc-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI -->
+  <section id="panel-ai-at-work" role="tabpanel" class="stack" hidden>
+    <div class="card">
+      <h2>Catalog triage: first pass by AI, every change approved by a person</h2>
+      <p class="lede">About 6,000 SKUs. Claude reads the whole export and proposes clean names, sizes and merges. I hand-verify the top ~1,000 sellers with the daughter, and nothing loads into Flowhub until each change is approved. These five rows are examples.</p>
+      <div id="tri-list" style="margin-top:10px"></div>
+      <p class="note" id="tri-sum" style="margin-top:12px" aria-live="polite"></p>
+    </div>
+
+    <div class="two">
+      <div class="card">
+        <h2>Day-30 health check, one view</h2>
+        <p class="lede">Failure rate, SKU accuracy, manual-price share and reconciliation pulled into a single page with pass and fail against the targets, instead of four reports.</p>
+        <div class="row" style="margin-top:14px"><button class="btn primary" type="button" id="open-calc">Open the health check</button></div>
+      </div>
+      <div class="card">
+        <h2>Store-two playbook, drafted from the flagship</h2>
+        <ul class="plain">
+          <li><b>Catalog:</b> reuse the cleaned master, rerun the sales-rank triage on store two's own items.</li>
+          <li><b>Payments:</b> start the processor application on signing day, not at kickoff.</li>
+          <li><b>Hardware:</b> order from the pre-kickoff inventory.</li>
+          <li><b>Go-live:</b> reuse the runbook and adjust for store hours.</li>
+          <li><b>Lessons:</b> filled in at day 30 from what actually happened.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Owner update, drafted from the numbers</h2>
+      <p class="lede">This draft fills in from the health check. On the job, Claude drafts it from the week's data and I edit it before it goes to the owner. Names in brackets are for me to fill in.</p>
+      <textarea class="draft" id="draft" spellcheck="true" aria-label="Owner update draft"></textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn primary" type="button" id="copy">Copy draft</button>
+        <button class="btn" type="button" id="refresh">Refresh from health check</button>
+        <span class="note" id="copy-status" aria-live="polite"></span>
+      </div>
+    </div>
+  </section>
+
+  <footer>Built with Claude from the written launch plan. The plan itself started from my own outline and a ChatGPT checklist. Processor timing and the manual-price targets are assumptions to validate with Flowhub and the owner.</footer>
+</div>
+
+<script>
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- tabs ---------- */
+  var VIEWS=['timeline','go-no-go','targets','ai-at-work'];
+  function showTab(id){
+    $$('.tab').forEach(function(t){var on=t.dataset.tab===id;t.setAttribute('aria-selected',String(on));t.tabIndex=on?0:-1});
+    $$('[role="tabpanel"]').forEach(function(p){p.hidden=p.id!=='panel-'+id});
+  }
+  $$('.tab').forEach(function(t){t.addEventListener('click',function(){showTab(t.dataset.tab)})});
+
+  /* ---------- timeline ---------- */
+  var steps=[
+    {date:'Oct 19 to 23',name:'Handoff, this week',now:true,
+     what:'Pre-kickoff email: Maui portal login, plus the payment packet, loyalty list, catalog, 12 months of sales by SKU and hardware list. Start the processor application and ask the owner to request an extension from the current processor.',
+     who:'Sales (what was promised). Flowhub payments (turnaround, named contact). Hardware (stock, lead time).',
+     slip:"The owner's payment paperwork. If it is not in by Friday, approval cannot land by Nov 2 and I flag the date as at risk.",
+     need:'Payment packet, loyalty list, catalog export, 12 months of sales by SKU and hardware list, all by Fri Oct 23.'},
+    {date:'Mon Oct 26',name:'Project kickoff',
+     what:'Owner and daughter: goals, owners, timeline, success metrics, training dates. Agree the go/no-go criteria now. Video walk-through of the flagship.',
+     who:'Payments contact on the call. Joe and Igor aware of any date risk.',
+     slip:'The owner favoring the date over readiness. Written criteria keep Nov 5 from becoming a negotiation.',
+     need:'Owner and daughter on the call. Named contacts for data, loyalty, payments and hardware.'},
+    {date:'Thu Oct 29',name:'Data & configuration review',
+     what:'Triage the catalog by 12 months of sales: hand-verify the top ~1,000 SKUs with the daughter, standardize the tail by rule, archive dead SKUs. Test import of the top 500. Loyalty: migrate balances if supported, otherwise load by phone number.',
+     who:'Flowhub data or support engineer (import, loyalty path). Hardware.',
+     slip:'The catalog is the biggest unknown, and the daughter is the only product expert while also running the store. Loyalty balances may not migrate, so plan B is legacy lookup for 90 days.',
+     need:'Daughter and one employee for two 60-minute catalog sessions. Hardware ordered and arriving by Oct 30.'},
+    {date:'Nov 2 to 4',name:'Build and test',
+     what:'Catalog freeze Nov 2. Install hardware with a separate POS network and cellular backup. Live test transactions on every terminal. Train staff Wed Nov 4.',
+     who:'Payments (approval, live tests). Support for hardware.',
+     slip:'Processor approval (about 5 to 10 business days), late hardware, and training on an unfinished catalog.',
+     need:'Catalog sign-off Nov 2. Staff available for training Wed Nov 4.'},
+    {date:'Thu Nov 5',name:'Launch readiness review',
+     what:'Go/no-go against the written criteria. See the gate tab.',
+     who:'Joe and Igor for any no-go call.',
+     slip:'A no-go means the flagship stays on legacy through the holiday weekend and launches Mon Nov 16, still before the contract ends.',
+     need:'Owner joins to confirm readiness.'},
+    {date:'Thu Nov 12',name:'Go-live',
+     what:'In person, on-site Thu to Sat. Hand-check every register before opening. Keep the old processor until two clean settlement cycles.',
+     who:'Named support and payments contacts on standby.',
+     slip:'Only one trading day before the holiday weekend. The first Saturday is the real test.',
+     need:'Top-100 SKU count after close on Wed Nov 11.'},
+    {date:'Mid-January',name:'Store two',
+     what:'Reuse the cleaned catalog and payments setup. Add store hardware, training and local counts. Start only after the flagship meets its day-30 targets two weeks running. Avoid Dec 18 to Jan 1.',
+     who:'Same team, plus the store-two manager (name needed).',
+     slip:'The owner pulling it forward before the flagship is stable. Store two legacy contract dates are unknown until kickoff.',
+     need:'Store-two manager named. Legacy contract dates for store two.'}
+  ];
+  var stepsEl=$('#steps'), detailEl=$('#detail');
+  steps.forEach(function(s,i){
+    var b=document.createElement('button');
+    b.type='button'; b.className='step'; b.setAttribute('aria-pressed','false');
+    b.innerHTML='<span class="step-date">'+s.date+'</span><span class="step-name">'+s.name+'</span>'+(s.now?'<span class="chip acc" style="align-self:flex-start">Now</span>':'');
+    b.addEventListener('click',function(){selectStep(i)});
+    stepsEl.appendChild(b);
+  });
+  function selectStep(i){
+    var s=steps[i];
+    $$('.step',stepsEl).forEach(function(b,j){b.setAttribute('aria-pressed',String(i===j))});
+    detailEl.innerHTML=
+      '<div><h3>What I do</h3><p>'+s.what+'</p></div>'+
+      '<div><h3>Who I bring in</h3><p>'+s.who+'</p></div>'+
+      '<div><h3>Where it slips</h3><p>'+s.slip+'</p></div>'+
+      '<div><h3>Needed from the customer</h3><p>'+s.need+'</p></div>';
+  }
+
+  /* ---------- go/no-go ---------- */
+  var gate=[
+    {t:'Payments approved and live-tested on every terminal',who:'Sign-off: Flowhub payments and me',met:false},
+    {t:'Top 300 SKUs fully verified for price and tax',who:'Sign-off: the daughter and me',met:true},
+    {t:'Every cashier completes a sale, refund, void and close unassisted',who:'Sign-off: me',met:false},
+    {t:'Backup internet passes',who:'Sign-off: me',met:true},
+    {t:'Legacy POS and processor remain available as fallback',who:'Sign-off: the owner',met:true}
+  ];
+  var gateEl=$('#gate-list');
+  gate.forEach(function(g,i){
+    var l=document.createElement('label'); l.className='check'; l.setAttribute('for','g'+i);
+    l.innerHTML='<input type="checkbox" id="g'+i+'"><span>'+g.t+'</span><span class="who">'+g.who+'</span>';
+    gateEl.appendChild(l);
+    $('#g'+i).addEventListener('change',function(e){g.met=e.target.checked;renderGate()});
+  });
+  function syncGate(){gate.forEach(function(g,i){$('#g'+i).checked=g.met});renderGate()}
+  function renderGate(){
+    var met=gate.filter(function(g){return g.met}).length, v=$('#verdict');
+    var open=gate.filter(function(g){return !g.met});
+    if(open.length===0){
+      v.dataset.tone='go';
+      v.innerHTML='<div class="count">'+met+' of '+gate.length+' met</div><div class="call">GO</div><p>The flagship opens Thu Nov 12. I am on-site Thu to Sat, and the legacy fallback stays in place until two clean settlement cycles.</p>';
+    }else{
+      v.dataset.tone='stop';
+      v.innerHTML='<div class="count">'+met+' of '+gate.length+' met</div><div class="call">NO-GO</div>'+
+        '<p>The flagship stays on legacy through the holiday weekend (Nov 13 to 15) and launches Mon Nov 16, a week before the contract ends. Open items each get an owner and a date.</p>'+
+        '<ul>'+open.map(function(g){return '<li>'+g.t+'</li>'}).join('')+'</ul>';
+    }
+  }
+  $('#gate-all').addEventListener('click',function(){gate.forEach(function(g){g.met=true});syncGate()});
+  $('#gate-reset').addEventListener('click',function(){gate.forEach(function(g,i){g.met=(i===1||i===3||i===4)});syncGate()});
+
+  /* ---------- targets ---------- */
+  var targets={
+    30:{date:'Sat Dec 12',stage:'Day 30: stabilization',q:'Can the store reliably run its daily business on Flowhub?',rows:[
+      ['System-caused transaction failures','Under 0.5% of attempts, excluding customer and card-issuer declines'],
+      ['Product data accuracy','99% or better on a sample of active SKUs (barcode, price, size, tax)'],
+      ['Payment reconciliation','100% of business days reconciled, discrepancies documented'],
+      ['Manual-price share','Under 3% of sale lines (proposed)'],
+      ['Employee readiness','100% of scheduled staff trained, and everyone on shift checks out unassisted'],
+      ['Critical issues','Zero unresolved incidents that stop selling or payments']]},
+    60:{date:'Mon Jan 11',stage:'Day 60: optimization',q:'Is the store using the system consistently, with less friction?',rows:[
+      ['Transaction reliability','Same or better than day 30, with no recurring critical failures'],
+      ['Product data accuracy','99.5% or better in the agreed SKU audit, exceptions tracked to resolution'],
+      ['Reconciliation','All business days reconciled, variances investigated within one business day'],
+      ['Manual-price share','Under 2% of sale lines (proposed)'],
+      ['Support burden','30% fewer repeat issues per 100 transactions than the first 30-day baseline'],
+      ['Workflow adoption','All active staff complete core workflows without hands-on help']]},
+    90:{date:'Wed Feb 10',stage:'Day 90: business value and expansion readiness',q:'Is the customer seeing reliable value, and is the next location ready?',rows:[
+      ['Transaction reliability','99.5% or better completion, no unresolved critical incidents'],
+      ['Catalog accuracy','99.5% or better in the agreed audit. New products and price changes follow a defined process'],
+      ['Manual-price share','Under 1% of sale lines (proposed)'],
+      ['Operational independence','Store manager handles routine workflows and documented troubleshooting without me'],
+      ['Issue resolution','No recurring high-impact issue without an owner and a fix plan, with fewer repeats each month'],
+      ['Second-store readiness','Named lead, confirmed scope, data and hardware needs, payment plan, training schedule and a proposed launch date']]}
+  };
+  var thr={30:{fail:0.5,acc:99,man:3},60:{fail:0.5,acc:99.5,man:2},90:{fail:0.5,acc:99.5,man:1}};
+  var day=30, lastCalc=null, draftEdited=false;
+
+  function renderTargets(){
+    var t=targets[day];
+    $('#t-date').textContent=t.date;
+    $('#t-stage').textContent=t.stage;
+    $('#t-q').textContent=t.q;
+    $('#t-body').innerHTML=t.rows.map(function(r){return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>'}).join('');
+  }
+  function setDay(d){
+    day=d;
+    $$('#seg button').forEach(function(b){b.setAttribute('aria-pressed',String(+b.dataset.day===d))});
+    renderTargets(); calc();
+  }
+  $$('#seg button').forEach(function(b){b.addEventListener('click',function(){setDay(+b.dataset.day)})});
+
+  function rate(n,d){
+    if(!isFinite(n)||!isFinite(d)||d<=0||n<0||n>d) return null;
+    return n*100/d;
+  }
+  function val(id){var v=$('#'+id).value.trim();return v===''?NaN:Number(v)}
+  function calc(){
+    var T=thr[day];
+    var rows=[
+      {k:'fail',label:'System-caused failure rate',v:rate(val('f-fail'),val('f-att')),need:'Under '+T.fail+'%',ok:function(v){return v<T.fail},
+       ask:'Nothing from you on this one. I am working it with Flowhub support and will send the cause.'},
+      {k:'acc',label:'SKU accuracy',v:rate(val('f-ok'),val('f-samp')),need:T.acc+'% or better',ok:function(v){return v>=T.acc},
+       ask:'30 minutes with [daughter] this week to review the SKUs flagged in the audit.'},
+      {k:'man',label:'Manual-price share',v:rate(val('f-man'),val('f-lines')),need:'Under '+T.man+'%',ok:function(v){return v<T.man},
+       ask:'30 minutes with [daughter] this week to fix the items cashiers are pricing by hand.'},
+      {k:'rec',label:'Days reconciled',v:rate(val('f-rec'),val('f-days')),need:'100%',ok:function(v){return v>=100},
+       ask:'Your help finding the unreconciled days with the store close records.'}
+    ];
+    var bad=0, off=[];
+    rows.forEach(function(r){
+      if(r.v===null){r.st='bad';bad++}
+      else if(r.ok(r.v)){r.st='ok'}
+      else{r.st='off';off.push(r)}
+    });
+    $('#calc-body').innerHTML=rows.map(function(r){
+      var chip=r.st==='ok'?'<span class="chip go">Meets target</span>':r.st==='off'?'<span class="chip stop">Off target</span>':'<span class="chip mute">Check numbers</span>';
+      return '<tr><td>'+r.label+'</td><td class="num">'+(r.v===null?'n/a':r.v.toFixed(2)+'%')+'</td><td class="num">'+r.need+'</td><td>'+chip+'</td></tr>';
+    }).join('');
+    var o=$('#overall');
+    if(bad){o.dataset.tone='warn';o.textContent='Enter every number, with each part no larger than its total, to see the result.'}
+    else if(off.length===0){o.dataset.tone='go';o.textContent='Healthy: all four measures meet the day-'+day+' targets.'}
+    else if(off.length===1){o.dataset.tone='warn';o.textContent='Watch: '+off[0].label.toLowerCase()+' is off target.'}
+    else{o.dataset.tone='stop';o.textContent='Act: '+off.length+' measures are off target ('+off.map(function(r){return r.label.toLowerCase()}).join(', ')+').'}
+    lastCalc={rows:rows,bad:bad,off:off};
+    if(!draftEdited) writeDraft();
+  }
+  $$('#calc-form input').forEach(function(i){i.addEventListener('input',calc)});
+  $('#calc-form').addEventListener('submit',function(e){e.preventDefault()});
+
+  /* ---------- AI view ---------- */
+  var tri=[
+    {raw:'TITOS HNDMD VDK 750',to:"Tito's Handmade Vodka 750ml",why:'Spelled out the brand and product, read the size from the name.',s:'approved'},
+    {raw:'Titos vodka 750 ml',to:'Merge into the row above',why:'Same UPC. Sales history stays on the merged item.',s:'approved'},
+    {raw:'JACK DANIELS OLD NO7 1L',to:"Jack Daniel's Old No. 7 1L",why:'Standard Brand | Product | Size name.',s:'pending'},
+    {raw:'Corona Extra 12pk',to:'Leave as is and flag for the daughter',why:'Size is missing and cannot be guessed (12oz bottles or cans).',s:'pending'},
+    {raw:'Barefoot Chard 1.5',to:'Barefoot Chardonnay 1.5L',why:'Read 1.5 as liters, the usual large wine bottle.',s:'pending'}
+  ];
+  var triEl=$('#tri-list');
+  function renderTri(){
+    triEl.innerHTML='';
+    tri.forEach(function(r,i){
+      var d=document.createElement('div'); d.className='tri';
+      d.innerHTML='<div class="raw">'+r.raw+'</div><div><div class="to">'+r.to+'</div><div class="why">'+r.why+'</div></div>'+
+        '<div class="row"><button type="button" class="btn approve" data-i="'+i+'" data-a="approved" aria-pressed="'+(r.s==='approved')+'">Approve</button>'+
+        '<button type="button" class="btn reject" data-i="'+i+'" data-a="rejected" aria-pressed="'+(r.s==='rejected')+'">Reject</button></div>';
+      triEl.appendChild(d);
+    });
+    var a=tri.filter(function(r){return r.s==='approved'}).length, x=tri.filter(function(r){return r.s==='rejected'}).length, p=tri.length-a-x;
+    $('#tri-sum').textContent=a+' approved, '+x+' rejected, '+p+' waiting. Nothing loads into Flowhub until every change is approved.';
+  }
+  triEl.addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    var r=tri[+b.dataset.i], a=b.dataset.a;
+    r.s=(r.s===a)?'pending':a;
+    renderTri();
+  });
+
+  function fmtN(n){return Number(n).toLocaleString('en-US')}
+  function writeDraft(){
+    var el=$('#draft'), c=lastCalc;
+    if(!c||c.bad){el.value='Fill in the health check numbers to draft the update.';return}
+    var r={};c.rows.forEach(function(x){r[x.k]=x});
+    function lc(s){return s.indexOf('SKU')===0?s:s.charAt(0).toLowerCase()+s.slice(1)}
+    var asks={
+      fail:"Nothing needed from you on this one. I'm working it with Flowhub support and will send you the cause as soon as I have it.",
+      acc:"About 30 minutes with [daughter] this week to go through the SKUs flagged in the audit. I'm happy to work around her schedule.",
+      man:"About 30 minutes with [daughter] this week to fix the items cashiers are pricing by hand. I'm happy to work around her schedule.",
+      rec:"A little help finding the unreconciled days in the store's close records. I'll do the legwork and just need a few minutes of your time."
+    };
+    var watch=c.off.length?c.off.map(function(x){return lc(x.label)+' is at '+x.v.toFixed(2)+'% against a target of '+x.need.toLowerCase()}).join(', and ')+'.':"nothing is outside the day-"+day+" targets, so no worries on my end.";
+    var ask=c.off.length?asks[c.off[0].k]:"Nothing this week. Keep doing what you're doing!";
+    var thanks=c.off.length?'':' Great work from [daughter] and the team.';
+    el.value='Subject: Quick flagship update, day '+day+'\n\nHi [Owner],\n\nHope your week is going well! Here is a quick look at the flagship.\n\n'+
+      'How it is going: '+fmtN(val('f-att'))+' transactions so far with '+fmtN(val('f-fail'))+' system-caused failures ('+r.fail.v.toFixed(2)+'%), and '+fmtN(val('f-rec'))+' of '+fmtN(val('f-days'))+' business days reconciled.'+thanks+'\n\n'+
+      'What I am keeping an eye on: '+watch+'\n\n'+
+      'How you can help: '+ask+'\n\n'+
+      'Next check-in: [day and time]. Call or text me anytime before then.\n\nThanks so much,\n[Your name]';
+  }
+  $('#draft').addEventListener('input',function(){draftEdited=true});
+  $('#refresh').addEventListener('click',function(){draftEdited=false;writeDraft();$('#copy-status').textContent='Refreshed from the health check.'});
+  $('#copy').addEventListener('click',function(){
+    var el=$('#draft'), st=$('#copy-status');
+    function fallback(){el.focus();el.select();st.textContent='Text selected. Press Ctrl+C or Cmd+C to copy.'}
+    try{
+      navigator.clipboard.writeText(el.value).then(function(){st.textContent='Copied.'},fallback);
+    }catch(err){fallback()}
+  });
+  $('#open-calc').addEventListener('click',function(){
+    showTab('targets'); setDay(30);
+    $('#calc').scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});
+  });
+
+  /* ---------- init ---------- */
+  selectStep(0);
+  syncGate();
+  renderTargets();
+  renderTri();
+  calc();
+  var h=(location.hash||'').slice(1);
+  if(VIEWS.indexOf(h)>-1) showTab(h);
+})();
+</script>
